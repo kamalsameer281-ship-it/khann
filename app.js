@@ -1,539 +1,1013 @@
 /* ==========================================================================
-   PIZZA JHON'S MARDAN - WEB APPLICATION & ORDERING ENGINE
+   PIZZA JOHN'S CAFE MARDAN - OFFICIAL ONLINE ORDERING ENGINE
+   100% Authentic Menu Data from Official Menu Flyers
    ========================================================================== */
 
 const CAFE_INFO = {
-  name: "Pizza Jhon's Cafe",
+  name: "Pizza John's Cafe Mardan",
+  shortName: "Pizza John's",
   city: "Mardan",
-  address: "Haji Rehmat Khan Medical Plaza, Shamsi Road, Opposite Yateem Khana, Mardan, KPK",
+  address: "Sakhi Tower, Opposite To Syed Children Hospital, Shamsi Road, Mardan, KPK",
   landline: "0937-871862",
+  phoneNumbers: ["0312-5551503", "0312-5542211", "0344-9804882"],
   whatsapp: "+923125551503",
   whatsappDisplay: "0312-5551503",
   googleMapsUrl: "https://maps.app.goo.gl/WYHp6iPbvwMtAhYy8",
-  deliveryFee: 100,
-  freeDeliveryThreshold: 1500,
-  hours: "12:00 PM - 02:00 AM Daily"
+  minOrder: 800,
+  deliveryFee: 0, // FREE HOME DELIVERY (for min order 800)
+  deliveryTime: "In 45 Mints",
+  hours: "10:00 AM – 11:59 PM (Till Late Midnight)"
 };
 
-// Comprehensive Menu Catalog
+// Crust Types from Menu Flyer
+const CRUST_OPTIONS = [
+  { id: "crust-hand", name: "Classic Hand Topping", price: 0 },
+  { id: "crust-thin", name: "Crunchy Thin Crust", price: 0 },
+  { id: "crust-deep", name: "Ultimate Deep Dish", price: 150 }
+];
+
+// Extra Toppings by Size from Menu Flyer
+const EXTRA_TOPPING_PRICES = {
+  small: 100,
+  medium: 150,
+  large: 200,
+  family: 250
+};
+
+// Official Complete Menu Items
 const MENU_ITEMS = [
-  // PIZZAS
+  // ==================== 1. STANDARD PIZZAS ====================
   {
     id: "piz-1",
-    name: "Chicken Tikka Pizza",
+    name: "1. Chicken Tikka B.B.Q Pizza",
     category: "pizzas",
     badge: "bestseller",
-    badgeLabel: "Popular ⭐",
-    desc: "Tender tandoori chicken tikka chunks, caramelized red onions, aromatic herbs & thick melted mozzarella cheese.",
+    badgeLabel: "Top Seller ⭐",
+    desc: "Tender tandoori B.B.Q chicken chunks, caramelized onions, mozzarella cheese & special pizza sauce.",
     image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
-      small: { label: "Small (7\")", price: 490 },
-      medium: { label: "Medium (10\")", price: 990 },
-      large: { label: "Large (13\")", price: 1490 },
-      monster: { label: "Monster (21\")", price: 2490 }
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
     },
-    basePrice: 490
+    basePrice: 650
   },
   {
     id: "piz-2",
-    name: "Crown Crust Special Pizza",
-    category: "pizzas",
-    badge: "special",
-    badgeLabel: "Chef's Crown 👑",
-    desc: "Our iconic specialty! Cheese-stuffed petal crown crust rim loaded with spiced fajita chunks, olives, and golden cheese.",
-    image: "assets/images/crown-crust.jpg",
-    isPizza: true,
-    sizes: {
-      medium: { label: "Medium (10\")", price: 1350 },
-      large: { label: "Large (13\")", price: 1850 },
-      monster: { label: "Monster (21\")", price: 2990 }
-    },
-    basePrice: 1350
-  },
-  {
-    id: "piz-3",
-    name: "Chicken Fajita Pizza",
+    name: "2. Chicken Fajita Pizza",
     category: "pizzas",
     badge: "bestseller",
     badgeLabel: "Classic ⭐",
-    desc: "Marinated Mexican-spiced chicken, crisp green bell peppers, sweet onions & double layered mozzarella.",
+    desc: "Marinated Mexican fajita chicken, green bell peppers, sweet red onions & double mozzarella.",
     image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
-      small: { label: "Small (7\")", price: 490 },
-      medium: { label: "Medium (10\")", price: 990 },
-      large: { label: "Large (13\")", price: 1490 },
-      monster: { label: "Monster (21\")", price: 2490 }
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
     },
-    basePrice: 490
+    basePrice: 650
+  },
+  {
+    id: "piz-3",
+    name: "3. Chicken Supreme Pizza",
+    category: "pizzas",
+    badge: "bestseller",
+    badgeLabel: "Loaded ⭐",
+    desc: "Loaded with chicken tikka, fajita chunks, sausages, black olives, mushrooms, onions, bell peppers & mozzarella.",
+    image: "assets/images/hero-pizza.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
+    },
+    basePrice: 650
   },
   {
     id: "piz-4",
-    name: "Fajita Sicilian Pizza",
+    name: "4. Tanduri Pizza",
     category: "pizzas",
-    badge: "spicy",
-    badgeLabel: "Spicy 🌶️",
-    desc: "For spice lovers! Fiery chicken, spicy sliced jalapenos, sauteed mushrooms, onions, and hot chili flakes.",
+    badge: "special",
+    badgeLabel: "Desi Taste 👑",
+    desc: "Authentic spicy tandoori chicken, onions, green chilies, cilantro aroma & hot mozzarella.",
     image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
-      small: { label: "Small (7\")", price: 520 },
-      medium: { label: "Medium (10\")", price: 1050 },
-      large: { label: "Large (13\")", price: 1550 },
-      monster: { label: "Monster (21\")", price: 2590 }
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
     },
-    basePrice: 520
+    basePrice: 650
   },
   {
     id: "piz-5",
-    name: "Creamy Malai Boti Pizza",
+    name: "5. Chicken Achar Special Pizza",
     category: "pizzas",
-    badge: "special",
-    badgeLabel: "Creamy Royal 👑",
-    desc: "Melt-in-your-mouth creamy malai chicken cubes, mild aromatic spices, fresh cream swirl & rich mozzarella blend.",
-    image: "assets/images/crown-crust.jpg",
+    badge: "spicy",
+    badgeLabel: "Chatpatta 🌶️",
+    desc: "Zesty pickling achar spices infused in chicken, tangy achari masala, red onions & melted cheese.",
+    image: "assets/images/hero-pizza.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
+    },
+    basePrice: 650
+  },
+  {
+    id: "piz-6",
+    name: "6. Chicken Lover Pizza",
+    category: "pizzas",
+    badge: "bestseller",
+    badgeLabel: "Meat Lover 🍗",
+    desc: "Triple chicken sensation: tikka, smoked chicken boti, chicken sausages & double mozzarella.",
+    image: "assets/images/hero-pizza.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
+    },
+    basePrice: 650
+  },
+  {
+    id: "piz-7",
+    name: "7. Vegetarian Pizza",
+    category: "pizzas",
+    badge: "veg",
+    badgeLabel: "Vegetarian 🥦",
+    desc: "Sweet corn, fresh mushrooms, black olives, tomatoes, bell peppers, onions & mozzarella.",
+    image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
       small: { label: "Small (7\")", price: 550 },
-      medium: { label: "Medium (10\")", price: 1090 },
-      large: { label: "Large (13\")", price: 1620 },
-      monster: { label: "Monster (21\")", price: 2690 }
+      medium: { label: "Medium (11\")", price: 950 },
+      large: { label: "Large (13\")", price: 1250 },
+      family: { label: "Family (16\")", price: 1700 }
     },
     basePrice: 550
   },
   {
-    id: "piz-6",
-    name: "Pizza John's Royal Supreme",
-    category: "pizzas",
-    badge: "bestseller",
-    badgeLabel: "Loaded ⭐",
-    desc: "The ultimate loaded pie: smoked chicken, beef pepperoni, sausages, black olives, bell peppers, and extra cheese.",
-    image: "assets/images/hero-pizza.jpg",
-    isPizza: true,
-    sizes: {
-      small: { label: "Small (7\")", price: 580 },
-      medium: { label: "Medium (10\")", price: 1150 },
-      large: { label: "Large (13\")", price: 1690 },
-      monster: { label: "Monster (21\")", price: 2790 }
-    },
-    basePrice: 580
-  },
-  {
-    id: "piz-7",
-    name: "Afghani Feast Pizza",
+    id: "piz-8",
+    name: "8. Afghani Pizza",
     category: "pizzas",
     badge: "special",
-    badgeLabel: "Smoky 👑",
-    desc: "Smoky Afghani chicken chunks infused with white pepper, herbs, onions, and rich garlic sauce over cheese.",
+    badgeLabel: "Mild & Smoky 👑",
+    desc: "Smoky Afghani chicken boti, mild white pepper sauce, mushrooms, onions & mozzarella blend.",
     image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
-      small: { label: "Small (7\")", price: 540 },
-      medium: { label: "Medium (10\")", price: 1080 },
-      large: { label: "Large (13\")", price: 1590 },
-      monster: { label: "Monster (21\")", price: 2650 }
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
     },
-    basePrice: 540
-  },
-  {
-    id: "piz-8",
-    name: "Peri Peri Blaze Pizza",
-    category: "pizzas",
-    badge: "spicy",
-    badgeLabel: "Fiery 🌶️",
-    desc: "Tangy & hot peri peri chicken, red paprika, jalapeno peppers, and zesty peri peri drizzle.",
-    image: "assets/images/hero-pizza.jpg",
-    isPizza: true,
-    sizes: {
-      small: { label: "Small (7\")", price: 530 },
-      medium: { label: "Medium (10\")", price: 1070 },
-      large: { label: "Large (13\")", price: 1590 },
-      monster: { label: "Monster (21\")", price: 2650 }
-    },
-    basePrice: 530
+    basePrice: 650
   },
   {
     id: "piz-9",
-    name: "Bihari Kabab Pizza",
+    name: "9. Pepperoni Pizza",
     category: "pizzas",
-    badge: "special",
-    badgeLabel: "Desi Fusion 👑",
-    desc: "Spicy tender Bihari kebab cuts, green chilies, pickled red onions, mint-coriander drizzle & cheese.",
-    image: "assets/images/crown-crust.jpg",
+    badge: "bestseller",
+    badgeLabel: "Classic ⭐",
+    desc: "Loaded with premium halal pepperoni slices, marinara herb sauce & golden bubbled cheese.",
+    image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
-      small: { label: "Small (7\")", price: 560 },
-      medium: { label: "Medium (10\")", price: 1120 },
-      large: { label: "Large (13\")", price: 1650 },
-      monster: { label: "Monster (21\")", price: 2750 }
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
     },
-    basePrice: 560
+    basePrice: 650
   },
   {
     id: "piz-10",
-    name: "Cheesy Margherita Pizza",
+    name: "10. Cheese Gold Pizza",
     category: "pizzas",
-    badge: "veg",
-    badgeLabel: "Vegetarian 🧀",
-    desc: "Double mozzarella cheese blend, Italian herb pizza sauce, sliced fresh tomatoes, and aromatic oregano.",
+    badge: "special",
+    badgeLabel: "Extra Cheese 🧀",
+    desc: "Triple cheese layer combining golden cheddar, creamy mozzarella & parmesan herbs.",
     image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
-      small: { label: "Small (7\")", price: 450 },
-      medium: { label: "Medium (10\")", price: 890 },
-      large: { label: "Large (13\")", price: 1350 },
-      monster: { label: "Monster (21\")", price: 2290 }
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
     },
-    basePrice: 450
+    basePrice: 650
   },
   {
     id: "piz-11",
-    name: "Veggie Delight Pizza",
+    name: "11. Hot & Spicy Pizza",
     category: "pizzas",
-    badge: "veg",
-    badgeLabel: "Fresh Veggie 🌽",
-    desc: "Sweet golden corn, sliced button mushrooms, black olives, crisp bell peppers, tomatoes, and mozzarella.",
+    badge: "spicy",
+    badgeLabel: "Hot & Spicy 🌶️",
+    desc: "Spicy Mexican chicken, hot jalapenos, chili flakes, red onions & zesty tomato salsa sauce.",
     image: "assets/images/hero-pizza.jpg",
     isPizza: true,
     sizes: {
-      small: { label: "Small (7\")", price: 460 },
-      medium: { label: "Medium (10\")", price: 910 },
-      large: { label: "Large (13\")", price: 1380 },
-      monster: { label: "Monster (21\")", price: 2320 }
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
     },
-    basePrice: 460
+    basePrice: 650
+  },
+  {
+    id: "piz-12",
+    name: "12. Grilled Pizza",
+    category: "pizzas",
+    badge: null,
+    badgeLabel: null,
+    desc: "Tender flame-grilled chicken strips, BBQ drizzle, roasted bell peppers & mozzarella.",
+    image: "assets/images/hero-pizza.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 650 },
+      medium: { label: "Medium (11\")", price: 1000 },
+      large: { label: "Large (13\")", price: 1300 },
+      family: { label: "Family (16\")", price: 1700 }
+    },
+    basePrice: 650
   },
 
-  // BURGERS
+  // ==================== 2. SPECIAL CRUST & CREAMY FLAVORS ====================
+  {
+    id: "piz-13",
+    name: "13. Double Crust Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Double Layer 👑",
+    desc: "Two layers of buttery dough packed with secret chicken filling, creamy sauce & cheese crust.",
+    image: "assets/images/crown-crust.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 750 },
+      medium: { label: "Medium (11\")", price: 1200 },
+      large: { label: "Large (13\")", price: 1500 },
+      family: { label: "Family (16\")", price: 1900 }
+    },
+    basePrice: 750
+  },
+  {
+    id: "piz-14",
+    name: "14. Crown Crust Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Famous Crown 👑",
+    desc: "Signature petal crown rim filled with cheese and chicken kabab balls, center loaded with spicy fajita.",
+    image: "assets/images/crown-crust.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 750 },
+      medium: { label: "Medium (11\")", price: 1200 },
+      large: { label: "Large (13\")", price: 1500 },
+      family: { label: "Family (16\")", price: 1900 }
+    },
+    basePrice: 750
+  },
+  {
+    id: "piz-15",
+    name: "15. Donner Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Donner Kebab 👑",
+    desc: "Succulent sliced donner meat, Turkish garlic sauce, crisp onions & mozzarella cheese.",
+    image: "assets/images/crown-crust.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 750 },
+      medium: { label: "Medium (11\")", price: 1200 },
+      large: { label: "Large (13\")", price: 1500 },
+      family: { label: "Family (16\")", price: 1900 }
+    },
+    basePrice: 750
+  },
+  {
+    id: "piz-16",
+    name: "16. Chicken Crust Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Chicken Stuffed 🍗",
+    desc: "Crust outer rim stuffed with savory spiced minced chicken & cheese bites.",
+    image: "assets/images/crown-crust.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 800 },
+      medium: { label: "Medium (11\")", price: 1300 },
+      large: { label: "Large (13\")", price: 1600 },
+      family: { label: "Family (16\")", price: 2000 }
+    },
+    basePrice: 800
+  },
+  {
+    id: "piz-17",
+    name: "17. Mint Special Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Mint Zest 🌿",
+    desc: "Refreshing garden mint & coriander sauce base, marinated chicken bites, onions & cheese.",
+    image: "assets/images/crown-crust.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 750 },
+      medium: { label: "Medium (11\")", price: 1200 },
+      large: { label: "Large (13\")", price: 1500 },
+      family: { label: "Family (16\")", price: 1900 }
+    },
+    basePrice: 750
+  },
+  {
+    id: "piz-18",
+    name: "18. Stuff Kabab Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Kabab Stuffed 👑",
+    desc: "Whole juicy chicken seekh kababs stuffed inside crust rim, topped with spicy chicken & olives.",
+    image: "assets/images/crown-crust.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 800 },
+      medium: { label: "Medium (11\")", price: 1300 },
+      large: { label: "Large (13\")", price: 1600 },
+      family: { label: "Family (16\")", price: 2000 }
+    },
+    basePrice: 800
+  },
+  {
+    id: "piz-19",
+    name: "19. Labnani Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Lebanese Royal 👑",
+    desc: "Lebanese inspired specialty with rich white garlic cream sauce, chicken boti, black olives & premium cheese.",
+    image: "assets/images/crown-crust.jpg",
+    isPizza: true,
+    sizes: {
+      small: { label: "Small (7\")", price: 850 },
+      medium: { label: "Medium (11\")", price: 1400 },
+      large: { label: "Large (13\")", price: 1800 },
+      family: { label: "Family (16\")", price: 2400 }
+    },
+    basePrice: 850
+  },
+  {
+    id: "piz-20",
+    name: "20. Train Pizza",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "Mega Train 🚂",
+    desc: "Massive rectangular train pizza serving 8-10 people! Multi-flavored feast for gatherings in Mardan.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 2999
+  },
+  {
+    id: "piz-21",
+    name: "21. 21\" Inch Giant Pizza + 1 Ltr Drink",
+    category: "pizzas",
+    badge: "special",
+    badgeLabel: "21\" Giant Monster 👑",
+    desc: "Colossal 21-inch giant party pizza loaded with your choice of flavors + 1 Ltr chilled drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 2999
+  },
+
+  // ==================== 3. SUPER DEALS (TRIPLE TREAT BOX) ====================
+  {
+    id: "sdeal-1",
+    name: "SUPER DEAL 1: Triple Treat Small (7\")",
+    category: "super-deals",
+    badge: "bestseller",
+    badgeLabel: "3 Pizzas + Drink ⭐",
+    desc: "3 Chicken Tikka Small Pizzas (7\") + 1 Ltr Chilled Drink Free!",
+    image: "assets/images/hero-pizza.jpg",
+    price: 1799,
+    dealItems: ["3x Chicken Tikka Small Pizza (7\")", "1x 1 Ltr Drink FREE"]
+  },
+  {
+    id: "sdeal-2",
+    name: "SUPER DEAL 2: Triple Treat Medium (11\")",
+    category: "super-deals",
+    badge: "bestseller",
+    badgeLabel: "Best Value Deal ⭐",
+    desc: "3 Chicken Tikka Medium Pizzas (11\") + 1 Ltr Chilled Drink Free!",
+    image: "assets/images/hero-pizza.jpg",
+    price: 2799,
+    dealItems: ["3x Chicken Tikka Medium Pizza (11\")", "1x 1 Ltr Drink FREE"]
+  },
+  {
+    id: "sdeal-3",
+    name: "SUPER DEAL 3: Triple Treat Large (13\")",
+    category: "super-deals",
+    badge: "special",
+    badgeLabel: "Family Mega Box 👑",
+    desc: "3 Chicken Tikka Large Pizzas (13\") + 1 Ltr Chilled Drink Free!",
+    image: "assets/images/hero-pizza.jpg",
+    price: 3799,
+    dealItems: ["3x Chicken Tikka Large Pizza (13\")", "1x 1 Ltr Drink FREE"]
+  },
+  {
+    id: "sdeal-4",
+    name: "SUPER DEAL 4: Triple Treat Family (16\")",
+    category: "super-deals",
+    badge: "special",
+    badgeLabel: "Huge Feast 👑",
+    desc: "3 Chicken Tikka Family Pizzas (16\") + 1 Ltr Chilled Drink Free!",
+    image: "assets/images/hero-pizza.jpg",
+    price: 4799,
+    dealItems: ["3x Chicken Tikka Family Pizza (16\")", "1x 1 Ltr Drink FREE"]
+  },
+
+  // ==================== 4. CLASSIC & FRIED DEALS (1-12) ====================
+  {
+    id: "deal-1",
+    name: "Classics Deal 1",
+    category: "classic-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 1 ⭐",
+    desc: "1 Small Pizza + 2 Zinger Burgers + 1 Reg Fries + 1 Ltr Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 1500,
+    dealItems: ["1x Small Pizza", "2x Zinger Burgers", "1x Reg Fries", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-2",
+    name: "Classics Deal 2",
+    category: "classic-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 2 ⭐",
+    desc: "1 Medium Pizza + 3 Zinger Burgers + 1 Reg Fries + 1 Ltr Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 2250,
+    dealItems: ["1x Medium Pizza", "3x Zinger Burgers", "1x Reg Fries", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-3",
+    name: "Classics Deal 3",
+    category: "classic-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 3 ⭐",
+    desc: "1 Large Pizza + 2 Zinger Burgers + 1 Reg Fries + 1 Ltr Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 2250,
+    dealItems: ["1x Large Pizza", "2x Zinger Burgers", "1x Reg Fries", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-4",
+    name: "Fried Deal 4",
+    category: "classic-deals",
+    badge: null,
+    badgeLabel: "Deal 4 🍗",
+    desc: "5 Pcs Hot Wings + 1 Zinger Burger + 1 Reg Fries + 1 Reg Drink.",
+    image: "assets/images/burger.jpg",
+    price: 850,
+    dealItems: ["5x Hot Wings", "1x Zinger Burger", "1x Reg Fries", "1x Reg Drink"]
+  },
+  {
+    id: "deal-5",
+    name: "Fried Deal 5",
+    category: "classic-deals",
+    badge: "special",
+    badgeLabel: "Deal 5 🍗",
+    desc: "10 Pcs Nuggets + 10 Pcs Hot Wings + 1 Medium Fries + 1 Ltr Drink.",
+    image: "assets/images/loaded-fries.jpg",
+    price: 1450,
+    dealItems: ["10x Pcs Nuggets", "10x Pcs Hot Wings", "1x Medium Fries", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-6",
+    name: "Fried Deal 6",
+    category: "classic-deals",
+    badge: null,
+    badgeLabel: "Deal 6 🍗",
+    desc: "Full Chicken Breast + 1 Reg Fries.",
+    image: "assets/images/burger.jpg",
+    price: 1600,
+    dealItems: ["Full Chicken Breast", "1x Reg Fries"]
+  },
+  {
+    id: "deal-7",
+    name: "Deal 07",
+    category: "classic-deals",
+    badge: null,
+    badgeLabel: "Deal 7 ⭐",
+    desc: "1 Zinger Burger + 1 Chicken Pc + 1 Reg Fries + 1 Reg Drink.",
+    image: "assets/images/burger.jpg",
+    price: 750,
+    dealItems: ["1x Zinger Burger", "1x Chicken Piece", "1x Reg Fries", "1x Reg Drink"]
+  },
+  {
+    id: "deal-8",
+    name: "Deal 08",
+    category: "classic-deals",
+    badge: null,
+    badgeLabel: "Deal 8 🍕",
+    desc: "1 Small Pizza B.B.Q + 1 Reg Fries + 1 Reg Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 800,
+    dealItems: ["1x Small B.B.Q Pizza", "1x Reg Fries", "1x Reg Drink"]
+  },
+  {
+    id: "deal-9",
+    name: "Deal 09",
+    category: "classic-deals",
+    badge: "special",
+    badgeLabel: "Deal 9 👑",
+    desc: "1 Family Pizza Tikka (16\") + 3 Zinger Burgers + 1 Reg Fries + 1 Ltr Drink.",
+    image: "assets/images/crown-crust.jpg",
+    price: 2800,
+    dealItems: ["1x Family Pizza Tikka", "3x Zinger Burgers", "1x Reg Fries", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-10",
+    name: "Deal 10",
+    category: "classic-deals",
+    badge: "special",
+    badgeLabel: "Crown Deal 👑",
+    desc: "1 Crown Crust Large Pizza + 1 Large Fries + 1 Ltr Drink.",
+    image: "assets/images/crown-crust.jpg",
+    price: 1850,
+    dealItems: ["1x Crown Crust Large Pizza", "1x Large Fries", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-11",
+    name: "Deal 11",
+    category: "classic-deals",
+    badge: "bestseller",
+    badgeLabel: "5 Zingers Pack ⭐",
+    desc: "5 Crispy Zinger Burgers + 1 Ltr Drink.",
+    image: "assets/images/burger.jpg",
+    price: 1800,
+    dealItems: ["5x Zinger Burgers", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-12",
+    name: "Deal 12",
+    category: "classic-deals",
+    badge: "bestseller",
+    badgeLabel: "Solo Zinger ⭐",
+    desc: "1 Zinger Burger + 1 Reg Fries + 1 Reg Drink.",
+    image: "assets/images/burger.jpg",
+    price: 550,
+    dealItems: ["1x Zinger Burger", "1x Reg Fries", "1x Reg Drink"]
+  },
+
+  // ==================== 5. FRIENDS & FAMILY DEALS (13-22) ====================
+  {
+    id: "deal-13",
+    name: "Deal 13: 2 Small Pizzas + 2 Zingers",
+    category: "family-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 13 ⭐",
+    desc: "2 Small Pizzas + 2 Zinger Burgers + 1 Ltr Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 1950,
+    dealItems: ["2x Small Pizzas", "2x Zinger Burgers", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-14",
+    name: "Deal 14: 1 Large Pizza + Drink",
+    category: "family-deals",
+    badge: null,
+    badgeLabel: "Deal 14 🍕",
+    desc: "1 Large Pizza (13\") + 1 Ltr Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 1400,
+    dealItems: ["1x Large Pizza (13\")", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-15",
+    name: "Deal 15: 2 Zingers + 10 Hot Wings",
+    category: "family-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 15 🍗",
+    desc: "2 Zinger Burgers + 10 Pieces Hot Wings + 1 Ltr Drink.",
+    image: "assets/images/burger.jpg",
+    price: 1500,
+    dealItems: ["2x Zinger Burgers", "10x Pieces Hot Wings", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-16",
+    name: "Deal 16: 1 Large Pizza + 4 Zingers",
+    category: "family-deals",
+    badge: "special",
+    badgeLabel: "Deal 16 👑",
+    desc: "1 Large Pizza (13\") + 4 Zinger Burgers + 1 Ltr Drink.",
+    image: "assets/images/crown-crust.jpg",
+    price: 2700,
+    dealItems: ["1x Large Pizza (13\")", "4x Zinger Burgers", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-17",
+    name: "Deal 17: 1 Large Pizza + 2 Zingers",
+    category: "family-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 17 ⭐",
+    desc: "1 Large Pizza (13\") + 2 Zinger Burgers + 1 Ltr Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 2050,
+    dealItems: ["1x Large Pizza (13\")", "2x Zinger Burgers", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-18",
+    name: "Deal 18: 1 Large Labnani Pizza + Drink",
+    category: "family-deals",
+    badge: "special",
+    badgeLabel: "Deal 18 👑",
+    desc: "1 Large Labnani Pizza + 1 Ltr Drink.",
+    image: "assets/images/crown-crust.jpg",
+    price: 1900,
+    dealItems: ["1x Large Labnani Pizza", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-19",
+    name: "Deal 19: 2 Double Decker Burgers",
+    category: "family-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 19 🍔",
+    desc: "2 Double Decker Burgers + 2 Reg Drinks.",
+    image: "assets/images/burger.jpg",
+    price: 1100,
+    dealItems: ["2x Double Decker Burgers", "2x Reg Drinks"]
+  },
+  {
+    id: "deal-20",
+    name: "Deal 20: Behari Roll + Drink",
+    category: "family-deals",
+    badge: null,
+    badgeLabel: "Deal 20 🌯",
+    desc: "Behari Roll With White Sauce + 1 Reg Drink.",
+    image: "assets/images/burger.jpg",
+    price: 600,
+    dealItems: ["1x Behari Roll With White Sauce", "1x Reg Drink"]
+  },
+  {
+    id: "deal-21",
+    name: "Deal 21: 1 Large Pizza + 10 Hot Wings",
+    category: "family-deals",
+    badge: "special",
+    badgeLabel: "Deal 21 ⭐",
+    desc: "1 Large Pizza (13\") + 10 Pcs Hot Wings + 1 Ltr Drink.",
+    image: "assets/images/hero-pizza.jpg",
+    price: 2000,
+    dealItems: ["1x Large Pizza (13\")", "10x Pcs Hot Wings", "1x 1 Ltr Drink"]
+  },
+  {
+    id: "deal-22",
+    name: "Deal 22: 20 Pcs Hot Wings + Drink",
+    category: "family-deals",
+    badge: "bestseller",
+    badgeLabel: "Deal 22 🍗",
+    desc: "20 Pieces Hot Wings + 1 Ltr Drink.",
+    image: "assets/images/burger.jpg",
+    price: 1500,
+    dealItems: ["20x Pieces Hot Wings", "1x 1 Ltr Drink"]
+  },
+
+  // ==================== 6. BURGERS ====================
   {
     id: "bur-1",
-    name: "John's Crispy Zinger Burger",
+    name: "Zinger Burger",
     category: "burgers",
     badge: "bestseller",
     badgeLabel: "Best Seller ⭐",
-    desc: "Crispy hand-battered fried chicken thigh filet, fresh iceberg lettuce, secret house sauce on a toasted brioche bun.",
+    desc: "Crispy fried whole chicken thigh filet, fresh iceberg lettuce, secret mayo sauce on toasted sesame brioche bun.",
     image: "assets/images/burger.jpg",
-    price: 420
+    price: 350
   },
   {
     id: "bur-2",
-    name: "Double Crunch Zinger with Cheese",
+    name: "Zinger Cheese Burger",
     category: "burgers",
     badge: "bestseller",
-    badgeLabel: "Big Bite ⭐",
-    desc: "Two crunchy fried chicken filets stacked high with double melted cheddar cheese and spicy mayo.",
-    image: "assets/images/burger.jpg",
-    price: 620
-  },
-  {
-    id: "bur-3",
-    name: "Smash Beef Beast Burger",
-    category: "burgers",
-    badge: "special",
-    badgeLabel: "Gourmet Beef 👑",
-    desc: "Double smashed beef patties seared on flat-top, American cheese, caramelized onions, pickles & smoky burger sauce.",
-    image: "assets/images/burger.jpg",
-    price: 680
-  },
-  {
-    id: "bur-4",
-    name: "Mardan Chapli Fusion Burger",
-    category: "burgers",
-    badge: "special",
-    badgeLabel: "Mardan Pride 👑",
-    desc: "Authentic spiced tender beef Chapli kebab patty, fresh tomatoes, mint yogurt drizzle, and onion rings.",
+    badgeLabel: "Cheesy ⭐",
+    desc: "Signature crispy zinger with a melted golden slice of dairy cheddar cheese and mayo sauce.",
     image: "assets/images/burger.jpg",
     price: 450
   },
   {
-    id: "bur-5",
-    name: "Smoky BBQ Grilled Chicken Burger",
+    id: "bur-3",
+    name: "Chicken Burger",
     category: "burgers",
     badge: null,
     badgeLabel: null,
-    desc: "Juicy flame-grilled chicken breast glazed with hickory BBQ sauce, cheddar cheese, and crisp romaine lettuce.",
+    desc: "Tender seasoned chicken patty, lettuce, onions, and garlic sauce.",
     image: "assets/images/burger.jpg",
-    price: 480
+    price: 300
+  },
+  {
+    id: "bur-4",
+    name: "Chicken Cheese Burger",
+    category: "burgers",
+    badge: null,
+    badgeLabel: null,
+    desc: "Chicken patty topped with melted cheddar cheese slice, fresh lettuce and mayo.",
+    image: "assets/images/burger.jpg",
+    price: 350
+  },
+  {
+    id: "bur-5",
+    name: "Tower Burger",
+    category: "burgers",
+    badge: "special",
+    badgeLabel: "Tower Beast 👑",
+    desc: "Crispy chicken zinger filet + crispy golden hashbrown potato patty + melted cheese.",
+    image: "assets/images/burger.jpg",
+    price: 450
   },
   {
     id: "bur-6",
-    name: "The Tower Mega Burger",
+    name: "Double Decker Burger",
     category: "burgers",
     badge: "bestseller",
-    badgeLabel: "Monster Monster ⭐",
-    desc: "Zinger filet + grilled beef patty + crispy golden hashbrown + melted double cheese + jalapeños.",
+    badgeLabel: "Double Layer ⭐",
+    desc: "Two stacked crispy chicken filets, double cheese, lettuce, and secret house sauce.",
     image: "assets/images/burger.jpg",
-    price: 790
+    price: 500
+  },
+  {
+    id: "bur-7",
+    name: "Grill Tower Burger",
+    category: "burgers",
+    badge: "special",
+    badgeLabel: "Flame Grilled 👑",
+    desc: "Flame-grilled chicken breast + hashbrown + melted cheddar cheese slice + BBQ sauce.",
+    image: "assets/images/burger.jpg",
+    price: 600
   },
 
-  // FRIES
+  // ==================== 7. PARATHA ROLLS ====================
+  {
+    id: "rol-1",
+    name: "Zinger Paratha",
+    category: "paratha",
+    badge: "bestseller",
+    badgeLabel: "Favorite ⭐",
+    desc: "Crispy fried zinger strips wrapped in flaky golden paratha with tangy mayo sauce & onions.",
+    image: "assets/images/burger.jpg",
+    price: 350
+  },
+  {
+    id: "rol-2",
+    name: "Zinger Cheese Paratha",
+    category: "paratha",
+    badge: "bestseller",
+    badgeLabel: "Cheese Roll ⭐",
+    desc: "Crunchy zinger cuts smothered in melted cheddar cheese rolled into a hot buttered paratha.",
+    image: "assets/images/burger.jpg",
+    price: 380
+  },
+  {
+    id: "rol-3",
+    name: "Chicken Paratha",
+    category: "paratha",
+    badge: null,
+    badgeLabel: null,
+    desc: "Spiced chicken boti, mint raita, sliced onions in crisp golden paratha.",
+    image: "assets/images/burger.jpg",
+    price: 300
+  },
+  {
+    id: "rol-4",
+    name: "Chicken Cheese Paratha",
+    category: "paratha",
+    badge: null,
+    badgeLabel: null,
+    desc: "Chicken boti + melted cheese blend wrapped in fresh crispy paratha.",
+    image: "assets/images/burger.jpg",
+    price: 350
+  },
+  {
+    id: "rol-5",
+    name: "Behari Roll with White Sauce",
+    category: "paratha",
+    badge: "special",
+    badgeLabel: "Chef's Behari 👑",
+    desc: "Tender spicy Behari kebab roll drizzled with signature white garlic herb sauce.",
+    image: "assets/images/burger.jpg",
+    price: 400
+  },
+
+  // ==================== 8. SHAWARMA ====================
+  {
+    id: "shw-1",
+    name: "Zinger Shawarma",
+    category: "shawarma",
+    badge: "bestseller",
+    badgeLabel: "Zinger Pita ⭐",
+    desc: "Crispy zinger chicken strips, pickled cucumber, tahini garlic sauce in soft pita bread.",
+    image: "assets/images/burger.jpg",
+    price: 300
+  },
+  {
+    id: "shw-2",
+    name: "Zinger Cheese Shawarma",
+    category: "shawarma",
+    badge: "bestseller",
+    badgeLabel: "Cheesy Shawarma ⭐",
+    desc: "Zinger pita shawarma with melted cheese slice and garlic herb sauce.",
+    image: "assets/images/burger.jpg",
+    price: 350
+  },
+  {
+    id: "shw-3",
+    name: "Chicken Shawarma",
+    category: "shawarma",
+    badge: null,
+    badgeLabel: null,
+    desc: "Traditional rotisserie style chicken, tahini, pickles, and garlic sauce.",
+    image: "assets/images/burger.jpg",
+    price: 250
+  },
+  {
+    id: "shw-4",
+    name: "Chicken Cheese Shawarma",
+    category: "shawarma",
+    badge: null,
+    badgeLabel: null,
+    desc: "Rotisserie chicken with melted cheddar cheese slice in warm pita bread.",
+    image: "assets/images/burger.jpg",
+    price: 300
+  },
+  {
+    id: "shw-5",
+    name: "Vegetable Shawarma",
+    category: "shawarma",
+    badge: "veg",
+    badgeLabel: "Veggie 🥗",
+    desc: "Crisp lettuce, cucumbers, tomatoes, sweet corn, pickles, and creamy garlic dressing.",
+    image: "assets/images/burger.jpg",
+    price: 200
+  },
+
+  // ==================== 9. FRIED CHICKEN & WINGS ====================
+  {
+    id: "frd-1",
+    name: "2 Piece Fried Chicken",
+    category: "fried",
+    badge: "bestseller",
+    badgeLabel: "Crispy Fried 🍗",
+    desc: "Two golden, crunchy battered chicken pieces seasoned with secret herbs.",
+    image: "assets/images/burger.jpg",
+    price: 500
+  },
+  {
+    id: "frd-2",
+    name: "10 Pieces Hot Wings",
+    category: "fried",
+    badge: "spicy",
+    badgeLabel: "10 Pcs Wings 🌶️",
+    desc: "Ten spicy crispy hot wings tossed with house chili dip.",
+    image: "assets/images/burger.jpg",
+    price: 700
+  },
+  {
+    id: "frd-3",
+    name: "10 Pieces Hot Shots",
+    category: "fried",
+    badge: "bestseller",
+    badgeLabel: "10 Pcs Shots 🍗",
+    desc: "Bite-sized boneless crispy chicken pops with a kick of spice.",
+    image: "assets/images/burger.jpg",
+    price: 700
+  },
+  {
+    id: "frd-4",
+    name: "10 Pieces Chicken Nuggets",
+    category: "fried",
+    badge: null,
+    badgeLabel: "10 Pcs Nuggets 🍗",
+    desc: "Golden fried chicken nuggets served hot with garlic dip.",
+    image: "assets/images/burger.jpg",
+    price: 700
+  },
+
+  // ==================== 10. FRIES ====================
   {
     id: "fry-1",
-    name: "John's Loaded Beast Fries",
+    name: "French Fries Regular",
     category: "fries",
-    badge: "special",
-    badgeLabel: "Must Try 👑",
-    desc: "Heaping platter of crispy fries topped with crispy chicken popcorn, melted cheddar, jalapenos & secret garlic drizzle.",
+    badge: null,
+    badgeLabel: null,
+    desc: "Classic salted crispy french fries.",
     image: "assets/images/loaded-fries.jpg",
-    price: 580
+    price: 150
   },
   {
     id: "fry-2",
-    name: "Baked Pizza Fries Supreme",
+    name: "Large French Fries",
     category: "fries",
     badge: "bestseller",
-    badgeLabel: "Favorite ⭐",
-    desc: "Golden fries baked in oven under rich pizza sauce, tandoori chicken chunks, sliced olives, and bubbly mozzarella.",
+    badgeLabel: "Large Box 🍟",
+    desc: "Large portion of hot golden salted fries.",
     image: "assets/images/loaded-fries.jpg",
-    price: 520
+    price: 250
   },
   {
     id: "fry-3",
-    name: "Cheesy Melt Fries",
+    name: "Loaded Fries",
     category: "fries",
-    badge: null,
-    badgeLabel: null,
-    desc: "Crispy straight-cut french fries generously smothered in warm, velvety melted cheddar cheese sauce.",
+    badge: "special",
+    badgeLabel: "Signature Loaded 👑",
+    desc: "Heaping platter of crispy fries smothered in melted cheddar cheese sauce, chicken chunks, jalapenos & secret garlic drizzle.",
     image: "assets/images/loaded-fries.jpg",
-    price: 390
-  },
-  {
-    id: "fry-4",
-    name: "Curly Twister Fries",
-    category: "fries",
-    badge: null,
-    badgeLabel: null,
-    desc: "Seasoned spiral curly fries fried to golden crunch with peri dip.",
-    image: "assets/images/loaded-fries.jpg",
-    price: 340
-  },
-  {
-    id: "fry-5",
-    name: "Masala Crinkle Fries",
-    category: "fries",
-    badge: "spicy",
-    badgeLabel: "Chatpatta 🌶️",
-    desc: "Crinkle-cut thick fries tossed in authentic Pakistani tangy chaat masala.",
-    image: "assets/images/loaded-fries.jpg",
-    price: 260
-  },
-  {
-    id: "fry-6",
-    name: "Classic Salted Crispy Fries",
-    category: "fries",
-    badge: null,
-    badgeLabel: null,
-    desc: "Fresh hot crispy fries sprinkled with sea salt. Served with ketchup.",
-    image: "assets/images/loaded-fries.jpg",
-    price: 220
+    price: 500
   },
 
-  // DRINKS & SHAKES
+  // ==================== 11. DRINKS ====================
   {
     id: "drk-1",
-    name: "Fresh Mint Margarita",
+    name: "1 Ltr Cold Drink",
     category: "drinks",
     badge: "bestseller",
-    badgeLabel: "Refreshing ⭐",
-    desc: "Crushed ice, fresh mint sprigs, tangy lime juice, sugar syrup, and fizzy soda in a mason jar.",
+    badgeLabel: "1 Liter 🥤",
+    desc: "Chilled 1 Liter bottle (Pepsi / 7Up / Mirinda / Mountain Dew).",
     image: "assets/images/drinks.jpg",
-    price: 280
+    price: 150
   },
   {
     id: "drk-2",
-    name: "Oreo Thick Milkshake",
+    name: "Regular Drink (Can / 250ml)",
     category: "drinks",
-    badge: "bestseller",
-    badgeLabel: "Creamy ⭐",
-    desc: "Creamy thick dairy milkshake blended with whole Oreos, chocolate ganache swirl, and fluffy whipped cream.",
+    badge: null,
+    badgeLabel: null,
+    desc: "Cold 250ml drink can (Pepsi / 7Up / Dew / Mirinda).",
     image: "assets/images/drinks.jpg",
-    price: 390
+    price: 100
   },
   {
     id: "drk-3",
-    name: "Cold Coffee with Vanilla Scoop",
+    name: "Mineral Water (500ml)",
     category: "drinks",
     badge: null,
     badgeLabel: null,
-    desc: "Chilled espresso roast blended with whole milk and crowned with a scoop of premium vanilla ice cream.",
+    desc: "Pure sealed chilled mineral water bottle.",
     image: "assets/images/drinks.jpg",
-    price: 360
-  },
-  {
-    id: "drk-4",
-    name: "Nutella Brownie Shake",
-    category: "drinks",
-    badge: "special",
-    badgeLabel: "Decadent 👑",
-    desc: "Rich Nutella spread blended with fudge brownie chunks and chocolate cream drizzle.",
-    image: "assets/images/drinks.jpg",
-    price: 440
-  },
-  {
-    id: "drk-5",
-    name: "Peach Iced Tea",
-    category: "drinks",
-    badge: null,
-    badgeLabel: null,
-    desc: "Brewed black tea infused with sweet peach nectar and served over crystal ice cubes.",
-    image: "assets/images/drinks.jpg",
-    price: 260
-  },
-  {
-    id: "drk-6",
-    name: "Chilled Soft Drinks (Can 250ml)",
-    category: "drinks",
-    badge: null,
-    badgeLabel: null,
-    desc: "Your choice of Pepsi, 7Up, Mountain Dew, Mirinda, or Pakola Fizz.",
-    image: "assets/images/drinks.jpg",
-    price: 120
-  },
-  {
-    id: "drk-7",
-    name: "Soft Drink 1.5L Family Bottle",
-    category: "drinks",
-    badge: null,
-    badgeLabel: null,
-    desc: "Ice-cold 1.5L bottle (Pepsi / 7Up / Mountain Dew).",
-    image: "assets/images/drinks.jpg",
-    price: 260
+    price: 70
   },
 
-  // SAUCES & DIPS
+  // ==================== 12. SAUCES & DIPS ====================
   {
     id: "sau-1",
-    name: "John's Secret Cafe Sauce",
+    name: "White Garlic Herb Sauce",
     category: "sauces",
-    badge: "special",
-    badgeLabel: "Signature 👑",
-    desc: "Our legendary house sauce! Tangy, creamy, lightly spiced secret recipe dip that goes with everything.",
+    badge: "bestseller",
+    badgeLabel: "Famous White Dip ⭐",
+    desc: "Pizza John's famous creamy roasted garlic white sauce dip.",
     image: "assets/images/sauces.jpg",
-    price: 80
+    price: 60
   },
   {
     id: "sau-2",
-    name: "Creamy Garlic Mayo Dip",
+    name: "Special Secret Cafe Sauce",
     category: "sauces",
-    badge: "bestseller",
-    badgeLabel: "Favorite ⭐",
-    desc: "Rich roasted garlic infused mayonnaise with fresh parsley and Italian herbs.",
+    badge: "special",
+    badgeLabel: "Chef's Secret 👑",
+    desc: "Tangy, smoky, lightly spiced signature house dip.",
     image: "assets/images/sauces.jpg",
-    price: 70
+    price: 80
   },
   {
     id: "sau-3",
-    name: "Fiery Peri Peri Chili Dip",
+    name: "Spicy Mayo Dip",
     category: "sauces",
     badge: "spicy",
-    badgeLabel: "Hot 🌶️",
-    desc: "African birds-eye chili, lemon juice, smoked paprika, and herb dip with a fiery kick.",
+    badgeLabel: "Spicy Dip 🌶️",
+    desc: "Creamy mayonnaise blended with red chili spices.",
     image: "assets/images/sauces.jpg",
-    price: 80
+    price: 60
   },
   {
     id: "sau-4",
-    name: "Honey Mustard Glaze Dip",
-    category: "sauces",
-    badge: null,
-    badgeLabel: null,
-    desc: "Smooth Dijon mustard balanced with golden organic honey for crispy strips and burgers.",
-    image: "assets/images/sauces.jpg",
-    price: 80
-  },
-  {
-    id: "sau-5",
-    name: "Smoky Chipotle BBQ Sauce",
-    category: "sauces",
-    badge: null,
-    badgeLabel: null,
-    desc: "Sweet and smoky hickory barbecue dip with a hint of chipotle warmth.",
-    image: "assets/images/sauces.jpg",
-    price: 80
-  },
-  {
-    id: "sau-6",
-    name: "Warm Cheddar Cheese Shot",
+    name: "Melted Cheese Sauce Cup",
     category: "sauces",
     badge: "special",
-    badgeLabel: "Pure Melt 🧀",
-    desc: "Pipings hot cup of creamy melted cheddar cheese dip for crusts and fries.",
+    badgeLabel: "Warm Cheese 🧀",
+    desc: "Cup of warm velvety cheddar cheese sauce.",
     image: "assets/images/sauces.jpg",
-    price: 120
-  },
-
-  // DEALS
-  {
-    id: "deal-1",
-    name: "Deal 1: Solo Fast Feast",
-    category: "deals",
-    badge: "bestseller",
-    badgeLabel: "Save ₨100 ⭐",
-    desc: "1 Crispy Zinger Burger + 1 Regular Salted Fries + 1 Chilled Soft Drink Can (250ml).",
-    image: "assets/images/burger.jpg",
-    price: 699,
-    dealItems: ["1x Crispy Zinger Burger", "1x Regular Salted Fries", "1x Soft Drink Can (250ml)"]
-  },
-  {
-    id: "deal-2",
-    name: "Deal 2: Duo Pizza Party",
-    category: "deals",
-    badge: "bestseller",
-    badgeLabel: "Save ₨220 ⭐",
-    desc: "1 Medium Pizza (Any Flavor) + 1 Crispy Zinger Burger + 1 500ml Chilled Drink.",
-    image: "assets/images/hero-pizza.jpg",
-    price: 1450,
-    dealItems: ["1x Medium Pizza (10\")", "1x Crispy Zinger Burger", "1x 500ml Drink"]
-  },
-  {
-    id: "deal-3",
-    name: "Deal 3: Family Mega Bonanza",
-    category: "deals",
-    badge: "special",
-    badgeLabel: "Best Value 👑",
-    desc: "1 Large Pizza (Any Flavor) + 1 Giant Loaded Beast Fries + 2 Zinger Burgers + 1.5L Family Drink.",
-    image: "assets/images/crown-crust.jpg",
-    price: 2850,
-    dealItems: ["1x Large Pizza (13\")", "1x Loaded Beast Fries", "2x Zinger Burgers", "1x 1.5L Drink"]
-  },
-  {
-    id: "deal-4",
-    name: "Deal 4: Midnight Monster Feast",
-    category: "deals",
-    badge: "special",
-    badgeLabel: "Save ₨500 👑",
-    desc: "1 Monster 21-Inch Giant Pizza + 2 Signature Secret Dips + 1.5L Cold Drink. Feeds 6-8 people!",
-    image: "assets/images/hero-pizza.jpg",
-    price: 2890,
-    dealItems: ["1x Monster 21\" Giant Pizza", "2x Signature Secret Dips", "1x 1.5L Family Drink"]
+    price: 100
   }
 ];
 
-// Available Crust Options
-const CRUST_OPTIONS = [
-  { id: "crust-hand", name: "Original Hand-Tossed", price: 0 },
-  { id: "crust-stuffed", name: "Cheesy Stuffed Crust", price: 250 },
-  { id: "crust-crown", name: "Signature Crown Crust", price: 350 },
-  { id: "crust-thin", name: "Crispy Thin Italian", price: 0 }
-];
-
-// Pizza Extra Add-ons
-const PIZZA_ADDONS = [
-  { id: "add-cheese", name: "Extra Mozzarella Cheese Blast", price: 180 },
-  { id: "add-jalapenos", name: "Spicy Pickled Jalapeños", price: 80 },
-  { id: "add-dip", name: "John's Secret Sauce Dip Ramekin", price: 70 },
-  { id: "add-olives", name: "Extra Black Olives & Mushrooms", price: 90 }
-];
-
-// Vouchers State
+// Available Promo Codes
 const VOUCHERS = {
   "MARDAN10": { discountPercent: 10, label: "10% Off Mardan Special" },
   "JHONS15": { discountPercent: 15, label: "15% Off Chef's Welcome" }
 };
 
 /* ==========================================================================
-   APPLICATION STATE
+   STATE MANAGEMENT
    ========================================================================== */
 let cart = JSON.parse(localStorage.getItem("pj_cart") || "[]");
 let currentCategory = "all";
@@ -542,7 +1016,7 @@ let appliedVoucher = null;
 let currentCustomizingItem = null;
 let selectedPizzaSize = "medium";
 let selectedPizzaCrust = "crust-hand";
-let selectedAddons = [];
+let hasExtraTopping = false;
 let orderDeliveryType = "delivery";
 
 /* ==========================================================================
@@ -575,11 +1049,6 @@ function renderMenu() {
   if (!grid) return;
 
   const filtered = MENU_ITEMS.filter(item => {
-    // Exclude standalone deals from products grid (they have their own section)
-    if (item.category === "deals" && currentCategory !== "deals") {
-      return false;
-    }
-
     const matchesCategory = currentCategory === "all" || item.category === currentCategory;
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           item.desc.toLowerCase().includes(searchQuery.toLowerCase());
@@ -590,8 +1059,8 @@ function renderMenu() {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
         <i class="fa-solid fa-pizza-slice" style="font-size: 3rem; color: var(--text-dim); margin-bottom: 16px;"></i>
-        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 8px;">No Flavors Found</h3>
-        <p style="color: var(--text-muted);">Try searching for "Tikka", "Fajita", "Zinger", "Loaded", or clear the filter.</p>
+        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 8px;">No Items Found</h3>
+        <p style="color: var(--text-muted);">Try searching for "Tikka", "Zinger", "Crown Crust", "Paratha", "Shawarma", or "Wings".</p>
       </div>
     `;
     return;
@@ -603,10 +1072,12 @@ function renderMenu() {
     ` : '';
 
     const priceDisplay = item.isPizza 
-      ? `₨ ${item.basePrice.toLocaleString()} <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-dim);">(from)</span>`
+      ? `₨ ${item.basePrice.toLocaleString()} <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-dim);">(Small)</span>`
       : `₨ ${item.price.toLocaleString()}`;
 
-    const buttonLabel = item.isPizza ? `Customize <i class="fa-solid fa-sliders"></i>` : `Add to Cart <i class="fa-solid fa-plus"></i>`;
+    const buttonLabel = item.isPizza 
+      ? `Choose Size <i class="fa-solid fa-sliders"></i>` 
+      : `Add to Cart <i class="fa-solid fa-plus"></i>`;
 
     return `
       <div class="food-card" data-id="${item.id}">
@@ -615,7 +1086,7 @@ function renderMenu() {
           ${badgeHtml}
         </div>
         <div class="food-card-body">
-          <span class="food-card-category">${item.category}</span>
+          <span class="food-card-category">${item.category.replace("-", " ")}</span>
           <h3 class="food-card-title">${item.name}</h3>
           <p class="food-card-desc">${item.desc}</p>
           <div class="food-card-footer">
@@ -637,9 +1108,10 @@ function renderDeals() {
   const dealsGrid = document.getElementById("dealsHighlightGrid");
   if (!dealsGrid) return;
 
-  const deals = MENU_ITEMS.filter(item => item.category === "deals");
+  // Highlight the 4 Super Deals (Triple Treat Box)
+  const superDeals = MENU_ITEMS.filter(item => item.category === "super-deals");
 
-  dealsGrid.innerHTML = deals.map(deal => {
+  dealsGrid.innerHTML = superDeals.map(deal => {
     const itemsList = (deal.dealItems || []).map(i => `
       <li><i class="fa-solid fa-check"></i> ${i}</li>
     `).join("");
@@ -647,18 +1119,18 @@ function renderDeals() {
     return `
       <div class="deal-card">
         <span class="deal-badge">${deal.badgeLabel || 'HOT DEAL'}</span>
-        <span class="deal-tag">Combo Offer</span>
+        <span class="deal-tag">Triple Treat Box</span>
         <h3 class="deal-title">${deal.name}</h3>
         <ul class="deal-items-list">
           ${itemsList}
         </ul>
         <div class="deal-footer">
           <div class="deal-pricing">
-            <span class="old-price">₨ ${(deal.price + 200).toLocaleString()}</span>
+            <span class="old-price">₨ ${(deal.price + 350).toLocaleString()}</span>
             <div class="final-price">₨ ${deal.price.toLocaleString()}</div>
           </div>
           <button class="btn-add-cart" onclick="addDirectToCart('${deal.id}')">
-            Order Combo <i class="fa-solid fa-cart-shopping"></i>
+            Order Deal <i class="fa-solid fa-cart-shopping"></i>
           </button>
         </div>
       </div>
@@ -775,7 +1247,7 @@ function handleItemAction(itemId) {
   const item = MENU_ITEMS.find(i => i.id === itemId);
   if (!item) return;
 
-  if (item.isPizza) {
+  if (item.isPizza && item.sizes) {
     openCustomModal(item);
   } else {
     addDirectToCart(itemId);
@@ -798,7 +1270,7 @@ function addDirectToCart(itemId) {
       price: item.price,
       qty: 1,
       isCustom: false,
-      metaText: item.category.toUpperCase()
+      metaText: item.category.toUpperCase().replace("-", " ")
     });
   }
 
@@ -846,15 +1318,15 @@ function renderCartItems() {
     container.innerHTML = `
       <div class="cart-empty-state">
         <i class="fa-solid fa-bag-shopping"></i>
-        <h3>Your Cart is Empty</h3>
-        <p>Explore our hot pizzas, smash burgers, and loaded fries in Mardan.</p>
+        <h3>Your Food Bag is Empty</h3>
+        <p>Explore Pizza John's hot pizzas, burgers, shawarma, and loaded fries in Mardan.</p>
         <button class="btn-primary" onclick="closeCart()" style="padding: 10px 24px; font-size: 0.9rem;">
           Browse Menu
         </button>
       </div>
     `;
     if (subtotalEl) subtotalEl.textContent = "₨ 0";
-    if (deliveryEl) deliveryEl.textContent = "₨ 0";
+    if (deliveryEl) deliveryEl.textContent = "FREE";
     if (discountRow) discountRow.style.display = "none";
     if (totalEl) totalEl.textContent = "₨ 0";
     return;
@@ -883,7 +1355,9 @@ function renderCartItems() {
 
   // Calculate Totals
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const delivery = subtotal >= CAFE_INFO.freeDeliveryThreshold || subtotal === 0 ? 0 : CAFE_INFO.deliveryFee;
+  
+  // Pizza John's offers FREE Home Delivery (Minimum delivery order ₨ 800)
+  const delivery = 0;
   
   let discount = 0;
   if (appliedVoucher) {
@@ -900,9 +1374,7 @@ function renderCartItems() {
 
   if (subtotalEl) subtotalEl.textContent = `₨ ${subtotal.toLocaleString()}`;
   if (deliveryEl) {
-    deliveryEl.innerHTML = delivery === 0 
-      ? `<span style="color: #25d366; font-weight: 700;">FREE</span>` 
-      : `₨ ${delivery.toLocaleString()}`;
+    deliveryEl.innerHTML = `<span style="color: #25d366; font-weight: 700;">FREE DELIVERY</span>`;
   }
   if (totalEl) totalEl.textContent = `₨ ${grandTotal.toLocaleString()}`;
 }
@@ -925,7 +1397,7 @@ function removeCartItem(cartId) {
   saveCart();
   updateCartBadge();
   renderCartItems();
-  showToast("Item removed from cart");
+  showToast("Item removed from bag");
 }
 
 function applyVoucherCode() {
@@ -943,13 +1415,13 @@ function applyVoucherCode() {
 }
 
 /* ==========================================================================
-   PIZZA CUSTOMIZATION MODAL ENGINE
+   PIZZA CUSTOMIZATION MODAL ENGINE (7", 11", 13", 16")
    ========================================================================== */
 function openCustomModal(item) {
   currentCustomizingItem = item;
   selectedPizzaSize = item.sizes.medium ? "medium" : Object.keys(item.sizes)[0];
   selectedPizzaCrust = "crust-hand";
-  selectedAddons = [];
+  hasExtraTopping = false;
 
   const overlay = document.getElementById("customModalOverlay");
   const title = document.getElementById("customModalItemTitle");
@@ -965,7 +1437,7 @@ function openCustomModal(item) {
   desc.textContent = item.desc;
   img.src = item.image;
 
-  // Render Sizes
+  // Render Sizes (Small 7", Medium 11", Large 13", Family 16")
   sizeGrid.innerHTML = Object.entries(item.sizes).map(([key, data]) => `
     <div class="custom-option-label ${key === selectedPizzaSize ? 'selected' : ''}" onclick="selectPizzaSize('${key}')">
       <span class="opt-name">${data.label}</span>
@@ -973,7 +1445,7 @@ function openCustomModal(item) {
     </div>
   `).join("");
 
-  // Render Crusts
+  // Render Crust Styles (Classic Hand Topping, Crunchy Thin, Ultimate Deep Dish)
   crustGrid.innerHTML = CRUST_OPTIONS.map(c => `
     <div class="custom-option-label ${c.id === selectedPizzaCrust ? 'selected' : ''}" onclick="selectPizzaCrust('${c.id}')">
       <span class="opt-name">${c.name}</span>
@@ -981,13 +1453,14 @@ function openCustomModal(item) {
     </div>
   `).join("");
 
-  // Render Add-ons
-  addonGrid.innerHTML = PIZZA_ADDONS.map(add => `
-    <div class="custom-option-label ${selectedAddons.includes(add.id) ? 'selected' : ''}" onclick="togglePizzaAddon('${add.id}')">
-      <span class="opt-name">${add.name}</span>
-      <span class="opt-price">+₨ ${add.price}</span>
+  // Render Extra Topping Checkbox Option
+  const toppingCost = EXTRA_TOPPING_PRICES[selectedPizzaSize] || 150;
+  addonGrid.innerHTML = `
+    <div class="custom-option-label ${hasExtraTopping ? 'selected' : ''}" onclick="toggleExtraTopping()">
+      <span class="opt-name">Extra Topping & Cheese Blast</span>
+      <span class="opt-price" id="extraToppingPriceDisplay">+₨ ${toppingCost}</span>
     </div>
-  `).join("");
+  `;
 
   updateCustomModalPrice();
   overlay.classList.add("active");
@@ -1005,6 +1478,14 @@ function selectPizzaSize(sizeKey) {
     const key = Object.keys(currentCustomizingItem.sizes)[index];
     el.classList.toggle("selected", key === sizeKey);
   });
+
+  // Update extra topping price dynamically based on size
+  const toppingCost = EXTRA_TOPPING_PRICES[selectedPizzaSize] || 150;
+  const toppingDisplay = document.getElementById("extraToppingPriceDisplay");
+  if (toppingDisplay) {
+    toppingDisplay.textContent = `+₨ ${toppingCost}`;
+  }
+
   updateCustomModalPrice();
 }
 
@@ -1017,17 +1498,12 @@ function selectPizzaCrust(crustId) {
   updateCustomModalPrice();
 }
 
-function togglePizzaAddon(addonId) {
-  if (selectedAddons.includes(addonId)) {
-    selectedAddons = selectedAddons.filter(id => id !== addonId);
-  } else {
-    selectedAddons.push(addonId);
+function toggleExtraTopping() {
+  hasExtraTopping = !hasExtraTopping;
+  const addonLabel = document.querySelector("#customModalAddonOptions .custom-option-label");
+  if (addonLabel) {
+    addonLabel.classList.toggle("selected", hasExtraTopping);
   }
-
-  document.querySelectorAll("#customModalAddonOptions .custom-option-label").forEach((el, index) => {
-    const id = PIZZA_ADDONS[index].id;
-    el.classList.toggle("selected", selectedAddons.includes(id));
-  });
   updateCustomModalPrice();
 }
 
@@ -1035,12 +1511,9 @@ function calculateCustomPizzaPrice() {
   if (!currentCustomizingItem) return 0;
   const sizePrice = currentCustomizingItem.sizes[selectedPizzaSize]?.price || currentCustomizingItem.basePrice;
   const crustPrice = CRUST_OPTIONS.find(c => c.id === selectedPizzaCrust)?.price || 0;
-  const addonsPrice = selectedAddons.reduce((sum, addId) => {
-    const addObj = PIZZA_ADDONS.find(a => a.id === addId);
-    return sum + (addObj ? addObj.price : 0);
-  }, 0);
+  const toppingPrice = hasExtraTopping ? (EXTRA_TOPPING_PRICES[selectedPizzaSize] || 150) : 0;
 
-  return sizePrice + crustPrice + addonsPrice;
+  return sizePrice + crustPrice + toppingPrice;
 }
 
 function updateCustomModalPrice() {
@@ -1056,11 +1529,10 @@ function addCustomizedPizzaToCart() {
 
   const sizeObj = currentCustomizingItem.sizes[selectedPizzaSize];
   const crustObj = CRUST_OPTIONS.find(c => c.id === selectedPizzaCrust);
-  const addonsList = selectedAddons.map(id => PIZZA_ADDONS.find(a => a.id === id)?.name).filter(Boolean);
 
   let metaParts = [sizeObj.label, crustObj.name];
-  if (addonsList.length > 0) {
-    metaParts.push(addonsList.join(", "));
+  if (hasExtraTopping) {
+    metaParts.push("Extra Topping");
   }
 
   const finalUnitPrice = calculateCustomPizzaPrice();
@@ -1091,6 +1563,12 @@ function openCheckoutModal() {
     showToast("Your cart is empty! Add items first. 🛒");
     return;
   }
+
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  if (orderDeliveryType === "delivery" && subtotal < CAFE_INFO.minOrder) {
+    showToast(`Minimum order for free home delivery in Mardan is ₨ ${CAFE_INFO.minOrder}. Current: ₨ ${subtotal}. ⚠️`);
+  }
+
   closeCart();
   const overlay = document.getElementById("checkoutModalOverlay");
   if (overlay) overlay.classList.add("active");
@@ -1103,7 +1581,7 @@ function closeCheckoutModal() {
 
 function getOrderSummary() {
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const delivery = orderDeliveryType === "takeaway" || subtotal >= CAFE_INFO.freeDeliveryThreshold ? 0 : CAFE_INFO.deliveryFee;
+  const delivery = 0; // Free Home Delivery
   let discount = 0;
   if (appliedVoucher) {
     discount = Math.round((subtotal * appliedVoucher.discountPercent) / 100);
@@ -1133,20 +1611,20 @@ function placeWhatsAppOrder() {
   const { subtotal, delivery, discount, grandTotal } = getOrderSummary();
   const orderId = "PJ-" + Math.floor(1000 + Math.random() * 9000);
 
-  // Build clean Pakistani WhatsApp message
-  let msg = `*🍕 NEW ONLINE ORDER - PIZZA JHON'S MARDAN*\n`;
+  // Build clean Pakistani WhatsApp message for Pizza John's Mardan
+  let msg = `*🍕 NEW ONLINE ORDER - PIZZA JOHN'S MARDAN*\n`;
   msg += `*Order ID:* #${orderId}\n`;
-  msg += `*Customer:* ${name}\n`;
-  msg += `*Contact:* ${phone}\n`;
-  msg += `*Type:* ${orderDeliveryType === "delivery" ? "🚀 Home Delivery" : "🛍️ Takeaway / Dine-in"}\n`;
+  msg += `*Customer Name:* ${name}\n`;
+  msg += `*Contact Phone:* ${phone}\n`;
+  msg += `*Order Type:* ${orderDeliveryType === "delivery" ? "🚀 Free Home Delivery" : "🛍️ Takeaway / Pickup"}\n`;
   
   if (orderDeliveryType === "delivery") {
-    msg += `*Area:* ${area}, Mardan\n`;
-    msg += `*Address:* ${address}\n`;
+    msg += `*Town / Area:* ${area}, Mardan\n`;
+    msg += `*Street Address:* ${address}\n`;
   }
   
-  msg += `*Payment:* ${payment}\n`;
-  if (notes) msg += `*Special Note:* ${notes}\n`;
+  msg += `*Payment Method:* ${payment}\n`;
+  if (notes) msg += `*Special Instructions:* ${notes}\n`;
 
   msg += `\n*📦 ORDER ITEMS:*\n`;
   cart.forEach((item, idx) => {
@@ -1157,10 +1635,10 @@ function placeWhatsAppOrder() {
 
   msg += `\n*💰 BILL SUMMARY:*\n`;
   msg += `Subtotal: ₨ ${subtotal.toLocaleString()}\n`;
-  if (discount > 0) msg += `Discount: -₨ ${discount.toLocaleString()}\n`;
-  msg += `Delivery Fee: ${delivery === 0 ? 'FREE' : `₨ ${delivery.toLocaleString()}`}\n`;
+  if (discount > 0) msg += `Voucher Discount: -₨ ${discount.toLocaleString()}\n`;
+  msg += `Home Delivery: FREE\n`;
   msg += `*Total Payable: ₨ ${grandTotal.toLocaleString()}*\n`;
-  msg += `\n📍 _Order submitted via Pizza Jhon's Mardan Online Menu_`;
+  msg += `\n📍 _Order sent to Pizza John's Mardan (Shamsi Road opp Syed Children Hospital)_`;
 
   const encodedUrl = `https://wa.me/923125551503?text=${encodeURIComponent(msg)}`;
   window.open(encodedUrl, "_blank");
@@ -1220,7 +1698,7 @@ function showTrackerModal(orderId, customerName, totalAmount) {
   updateCartBadge();
 
   overlay.classList.add("active");
-  showToast("Order placed successfully! Kitchen preparing... 🔥");
+  showToast("Order confirmed! Pizza John's kitchen is preparing your order... 🔥");
 }
 
 function closeTrackerModal() {
